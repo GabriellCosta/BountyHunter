@@ -1,2 +1,5 @@
 include ':app'
-rootProject.name='BountyHunter'
+include ':network'
+include ':core'
+include ':sample:core'
+rootProject.name = 'BountyHunter'
