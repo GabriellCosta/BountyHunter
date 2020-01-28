@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.tigrao.bountyhunter.plugin
+package dev.tigrao.bountyhunter.tracker
 
 import org.gradle.api.logging.Logger
 import java.io.File

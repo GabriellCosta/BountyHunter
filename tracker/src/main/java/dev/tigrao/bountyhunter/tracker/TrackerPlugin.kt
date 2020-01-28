@@ -1,4 +1,4 @@
-package dev.tigrao.bountyhunter.plugin
+package dev.tigrao.bountyhunter.tracker
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
