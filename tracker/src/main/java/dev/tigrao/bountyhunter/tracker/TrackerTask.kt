@@ -48,7 +48,6 @@ open class TrackerTask : DefaultTask() {
 
         projectsToEval.forEach { file ->
             project.allprojects.forEach { all ->
-                println("Module ${all.name}")
                 val items = all
                     .configurations
                     .flatMap { it.dependencies }
@@ -56,7 +55,6 @@ open class TrackerTask : DefaultTask() {
                     .filter { it.name == file.name }
                     .toSet()
 
-                println(items.map { it.name })
                 if (items.isNotEmpty()) {
                     collection.add(all)
                 }
@@ -77,9 +75,11 @@ open class TrackerTask : DefaultTask() {
         if (collection.contains(project.rootProject))
             file.appendText(task)
         else
-            collection.forEach {
-                file.appendText("${it.path}:$task")
-                file.appendText("\n")
+            collection.forEach { collectionItem ->
+                collectionItem.getTasksByName(task, false).firstOrNull()?.let { itemTasks ->
+                    file.appendText(itemTasks.path)
+                    file.appendText("\n")
+                }
             }
     }
 }
