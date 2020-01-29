@@ -94,9 +94,16 @@ internal class GitClientImpl(
             .first()
 
     private fun getLastShaFromPrincipalBranch(): String =
-        MERGE_SHA_CMD.format(getCurrentBranchName())
+        MERGE_SHA_CMD.format(getCurrentBranchName(), getDefaultBranchName())
             .runCommand()
             .first()
+
+    private fun getDefaultBranchName() =
+        DEFAULT_BRANCH_CMD
+            .runCommand()
+            .first()
+            .split("/")
+            .last()
 
     private fun String.runCommand() = commandRunner.execute(this)
 
@@ -127,8 +134,9 @@ internal class GitClientImpl(
     }
 
     companion object {
+        private const val DEFAULT_BRANCH_CMD = "git symbolic-ref refs/remotes/origin/HEAD"
         private const val CURRENT_BRANCH_NAME_CMD = "git rev-parse --abbrev-ref HEAD"
-        internal const val MERGE_SHA_CMD = "git merge-base %s origin/master"
+        internal const val MERGE_SHA_CMD = "git merge-base %s %s"
         internal const val PREV_MERGE_CMD = "git log -1 --merges --oneline"
         internal const val CHANGED_FILES_CMD_PREFIX = "git diff --name-only"
     }
