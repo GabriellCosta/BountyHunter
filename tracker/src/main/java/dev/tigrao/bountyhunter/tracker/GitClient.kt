@@ -29,6 +29,8 @@ internal interface GitClient {
 
     fun findPreviousMergeCL(): String?
 
+    fun findChangesFromPrincipalBranch(): List<String>
+
     /**
      * Abstraction for running execution commands for testability
      */
@@ -82,6 +84,20 @@ internal class GitClientImpl(
             ?.firstOrNull()
     }
 
+    override fun findChangesFromPrincipalBranch(): List<String> {
+        return findChangedFilesSince(getLastShaFromPrincipalBranch())
+    }
+
+    private fun getCurrentBranchName(): String =
+        CURRENT_BRANCH_NAME_CMD
+            .runCommand()
+            .first()
+
+    private fun getLastShaFromPrincipalBranch(): String =
+        MERGE_SHA_CMD.format(getCurrentBranchName())
+            .runCommand()
+            .first()
+
     private fun String.runCommand() = commandRunner.execute(this)
 
     private class RealCommandRunner(
@@ -111,6 +127,8 @@ internal class GitClientImpl(
     }
 
     companion object {
+        private const val CURRENT_BRANCH_NAME_CMD = "git rev-parse --abbrev-ref HEAD"
+        internal const val MERGE_SHA_CMD = "git merge-base %s origin/master"
         internal const val PREV_MERGE_CMD = "git log -1 --merges --oneline"
         internal const val CHANGED_FILES_CMD_PREFIX = "git diff --name-only"
     }
