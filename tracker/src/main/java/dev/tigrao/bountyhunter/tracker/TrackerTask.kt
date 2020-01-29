@@ -1,4 +1,4 @@
-package dev.tigrao.bountyhunter.plugin
+package dev.tigrao.bountyhunter.tracker
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -9,8 +9,9 @@ import java.io.File
 
 open class TrackerTask : DefaultTask() {
 
-    @Option(option = "targetModule", description = "Module to found dependent List")
-    var targetModule: String = ""
+    private val gitClient : GitClient by lazy {
+        GitClientImpl(project.projectDir)
+    }
 
     @TaskAction
     fun sayHello() {
@@ -22,7 +23,7 @@ open class TrackerTask : DefaultTask() {
                 .configurations
                 .flatMap { it.dependencies }
                 .filterIsInstance<DefaultProjectDependency>()
-                .filter { it.name == targetModule }
+                //.filter { it.name == targetModule }
                 .toSet()
 
             println(items.map { it.name })
