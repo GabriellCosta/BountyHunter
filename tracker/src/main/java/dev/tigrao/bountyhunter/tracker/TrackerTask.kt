@@ -15,6 +15,10 @@ open class TrackerTask : DefaultTask() {
 
     private val affectedModules = AffectedModules(project)
 
+    private val writerToFile by lazy {
+        WriterToFile(project, task)
+    }
+
     init {
         description = "Create file with modules to run your tasks"
         group = LifecycleBasePlugin.VERIFICATION_GROUP
@@ -24,7 +28,7 @@ open class TrackerTask : DefaultTask() {
     fun sayHello() {
         val collection = getProjectsToRun()
 
-        writeToFile(collection)
+        writerToFile.writeToFile(collection)
     }
 
     private fun getProjectsToRun(): Collection<Project> {
@@ -53,27 +57,5 @@ open class TrackerTask : DefaultTask() {
         }
 
         return collection
-    }
-
-    private fun writeToFile(collection: Collection<Project>) {
-        val file = File("${project.buildDir.absolutePath}/tasks_to_run")
-
-        if (file.exists())
-            file.delete()
-
-        file.createNewFile()
-
-        if (collection.contains(project.rootProject))
-            file.appendText(task.toString())
-        else
-            collection.forEach { collectionItem ->
-                task.forEach { currentTask ->
-                    collectionItem.getTasksByName(currentTask, false).firstOrNull()
-                        ?.let { itemTasks ->
-                            file.appendText(itemTasks.path)
-                            file.appendText("\n")
-                        }
-                }
-            }
     }
 }
