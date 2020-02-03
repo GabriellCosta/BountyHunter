@@ -6,14 +6,16 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import org.gradle.language.base.plugins.LifecycleBasePlugin
-import java.io.File
 
 open class TrackerTask : DefaultTask() {
 
     @Option(option = "task", description = "Task to run in modules")
     var task: List<String> = mutableListOf()
 
-    private val affectedModules = AffectedModules(project)
+    @Option(option = "defaultBranch", description = "Task to run in modules")
+    var defaultBranch : String = "master"
+
+    private val affectedModules = AffectedModules(project, defaultBranch)
 
     private val writerToFile by lazy {
         WriterToFile(project, task)

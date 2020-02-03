@@ -2,10 +2,13 @@ package dev.tigrao.bountyhunter.tracker
 
 import org.gradle.api.Project
 
-internal class AffectedModules(private val project: Project) {
+internal class AffectedModules(
+    private val project: Project,
+    private val defaultBranch: String
+) {
 
     private val gitClient: GitClient by lazy {
-        GitClientImpl(project.projectDir)
+        GitClientImpl(project.projectDir, defaultBranch = defaultBranch)
     }
 
     private val projectGraph: ProjectGraph by lazy {
