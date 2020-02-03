@@ -15,7 +15,9 @@ open class TrackerTask : DefaultTask() {
     @Option(option = "defaultBranch", description = "Task to run in modules")
     var defaultBranch : String = "master"
 
-    private val affectedModules = AffectedModules(project, defaultBranch)
+    private val affectedModules by lazy {
+        AffectedModules(project, defaultBranch)
+    }
 
     private val writerToFile by lazy {
         WriterToFile(project, task)
