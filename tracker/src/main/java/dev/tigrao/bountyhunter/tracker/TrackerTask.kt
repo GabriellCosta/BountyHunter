@@ -12,7 +12,7 @@ import java.io.File
 open class TrackerTask : DefaultTask() {
 
     @Option(option = "task", description = "Task to run in modules")
-    var task: String = ""
+    var task: List<String> = mutableListOf()
 
     private val gitClient: GitClient by lazy {
         GitClientImpl(project.projectDir)
@@ -80,12 +80,15 @@ open class TrackerTask : DefaultTask() {
         file.createNewFile()
 
         if (collection.contains(project.rootProject))
-            file.appendText(task)
+            file.appendText(task.toString())
         else
             collection.forEach { collectionItem ->
-                collectionItem.getTasksByName(task, false).firstOrNull()?.let { itemTasks ->
-                    file.appendText(itemTasks.path)
-                    file.appendText("\n")
+                task.forEach { currentTask ->
+                    collectionItem.getTasksByName(currentTask, false).firstOrNull()
+                        ?.let { itemTasks ->
+                            file.appendText(itemTasks.path)
+                            file.appendText("\n")
+                        }
                 }
             }
     }
