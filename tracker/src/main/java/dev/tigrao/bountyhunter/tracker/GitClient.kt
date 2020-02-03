@@ -55,7 +55,8 @@ internal class GitClientImpl(
     private val commandRunner: GitClient.CommandRunner = RealCommandRunner(
         workingDir = workingDir,
         logger = logger
-    )
+    ),
+    private val defaultBranch: String
 ) : GitClient {
     /**
      * Finds changed file paths since the given sha
@@ -94,16 +95,9 @@ internal class GitClientImpl(
             .first()
 
     private fun getLastShaFromPrincipalBranch(): String =
-        MERGE_SHA_CMD.format(getCurrentBranchName(), getDefaultBranchName())
+        MERGE_SHA_CMD.format(getCurrentBranchName(), defaultBranch)
             .runCommand()
             .first()
-
-    private fun getDefaultBranchName() =
-        DEFAULT_BRANCH_CMD
-            .runCommand()
-            .first()
-            .split("/")
-            .last()
 
     private fun String.runCommand() = commandRunner.execute(this)
 
@@ -134,7 +128,6 @@ internal class GitClientImpl(
     }
 
     companion object {
-        private const val DEFAULT_BRANCH_CMD = "git symbolic-ref refs/remotes/origin/HEAD"
         private const val CURRENT_BRANCH_NAME_CMD = "git rev-parse --abbrev-ref HEAD"
         internal const val MERGE_SHA_CMD = "git merge-base %s %s"
         internal const val PREV_MERGE_CMD = "git log -1 --merges --oneline"
