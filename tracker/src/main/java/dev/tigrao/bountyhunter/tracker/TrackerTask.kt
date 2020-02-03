@@ -5,7 +5,6 @@ import org.gradle.api.Project
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
-import org.gradle.internal.impldep.aQute.bnd.service.lifecycle.LifeCyclePlugin
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import java.io.File
 
@@ -14,13 +13,7 @@ open class TrackerTask : DefaultTask() {
     @Option(option = "task", description = "Task to run in modules")
     var task: List<String> = mutableListOf()
 
-    private val gitClient: GitClient by lazy {
-        GitClientImpl(project.projectDir)
-    }
-
-    private val projectGraph: ProjectGraph by lazy {
-        ProjectGraph(project.rootProject)
-    }
+    private val affectedModules = AffectedModules(project)
 
     init {
         description = "Create file with modules to run your tasks"
@@ -37,19 +30,10 @@ open class TrackerTask : DefaultTask() {
     private fun getProjectsToRun(): Collection<Project> {
         val collection = sortedSetOf<Project>()
 
-        val files = gitClient.findChangesFromPrincipalBranch()
-        val projectsToEval = mutableSetOf<Project>()
-        files.forEach {
-            val currentProject = projectGraph.findContainingProject(it)
+        val projectsToEval = affectedModules.getAffectedModules()
 
-            if (currentProject != null)
-                projectsToEval.add(currentProject)
-            else {
-                collection += project.rootProject
-
-                return collection
-            }
-        }
+        if (projectsToEval.isEmpty())
+            return setOf(project.rootProject)
 
         collection += projectsToEval
 
