@@ -5,6 +5,8 @@ import org.gradle.api.Project
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.gradle.internal.impldep.aQute.bnd.service.lifecycle.LifeCyclePlugin
+import org.gradle.language.base.plugins.LifecycleBasePlugin
 import java.io.File
 
 open class TrackerTask : DefaultTask() {
@@ -18,6 +20,11 @@ open class TrackerTask : DefaultTask() {
 
     private val projectGraph: ProjectGraph by lazy {
         ProjectGraph(project.rootProject)
+    }
+
+    init {
+        description = "Create file with modules to run your tasks"
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
     }
 
     @TaskAction
