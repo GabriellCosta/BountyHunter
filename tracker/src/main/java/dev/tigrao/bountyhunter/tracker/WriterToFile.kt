@@ -15,9 +15,12 @@ internal class WriterToFile(
 
         file.createNewFile()
 
-        if (collection.contains(project.rootProject))
-            file.appendText(task.first())
-        else
+        if (collection.contains(project.rootProject)) {
+          task.forEach {
+              file.appendText(it)
+              file.appendText(" ")
+          }
+        } else
             collection.forEach { collectionItem ->
                 task.forEach { currentTask ->
                     collectionItem.getTasksByName(currentTask, false).firstOrNull()
