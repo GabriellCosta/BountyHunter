@@ -5,19 +5,18 @@ import java.io.File
 
 internal class WriterToFile(
     private val project: Project,
-    private val task: Collection<String>
+    private val task: Collection<String>,
+    private val file: File = File("${project.buildDir.absolutePath}/tasks_to_run")
 ) {
 
     fun writeToFile(collection: Collection<Project>) {
-        val file = File("${project.buildDir.absolutePath}/tasks_to_run")
-
         if (file.exists())
             file.delete()
 
         file.createNewFile()
 
         if (collection.contains(project.rootProject))
-            file.appendText(task.toString())
+            file.appendText(task.first())
         else
             collection.forEach { collectionItem ->
                 task.forEach { currentTask ->
