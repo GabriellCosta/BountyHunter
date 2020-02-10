@@ -4,12 +4,8 @@ import org.gradle.api.Project
 
 internal class AffectedModules(
     private val project: Project,
-    private val defaultBranch: String
+    private val gitClient: GitClient
 ) {
-
-    private val gitClient: GitClient by lazy {
-        GitClientImpl(project.projectDir, defaultBranch = defaultBranch)
-    }
 
     private val projectGraph: ProjectGraph by lazy {
         ProjectGraph(project.rootProject)

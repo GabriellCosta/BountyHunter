@@ -6,17 +6,20 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import org.gradle.language.base.plugins.LifecycleBasePlugin
+import javax.inject.Inject
 
-open class TrackerTask : DefaultTask() {
+open class TrackerTask @Inject constructor(private val trackerExtension: TrackerExtension) :
+    DefaultTask() {
 
     @Option(option = "task", description = "Task to run in modules")
     var task: List<String> = mutableListOf()
 
-    @Option(option = "defaultBranch", description = "Task to run in modules")
-    var defaultBranch : String = "master"
+    private val gitClient: GitClient by lazy {
+        GitClientImpl(project.projectDir, defaultBranch = trackerExtension.defaultBranch)
+    }
 
     private val affectedModules by lazy {
-        AffectedModules(project, defaultBranch)
+        AffectedModules(project, gitClient)
     }
 
     private val writerToFile by lazy {
