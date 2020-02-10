@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.tigrao"
-version = "0.0.3"
+version = "0.0.5"
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
