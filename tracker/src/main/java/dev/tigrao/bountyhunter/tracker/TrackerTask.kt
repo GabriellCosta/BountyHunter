@@ -11,6 +11,10 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 open class TrackerTask : DefaultTask() {
 
+    companion object {
+        private const val LOG_PATTERN = "{}: {}\n"
+    }
+
     // region Task fields
     // region Configurable fields
     var defaultBranch: String = "master"
@@ -64,6 +68,11 @@ open class TrackerTask : DefaultTask() {
 
     override fun configure(closure: Closure<*>): Task =
         super.configure(closure).apply {
+            info("All affected files", allAffectedFiles)
+            info("Filtered affected files", affectedFiles)
+            info("Tasks configured", runTasks)
+            logger.lifecycle(LOG_PATTERN, "Tasks to run", tasksToRun)
+
             dependsOn(*tasksToRun.toTypedArray())
         }
 
@@ -73,6 +82,9 @@ open class TrackerTask : DefaultTask() {
 
         val collection = affectedModules.toSortedSet()
 
+        info("Non modules files", nonModuleFiles)
+        info("Modules affected", affectedModules.map { it.displayName })
+
         if (nonModuleFiles.isNotEmpty())
             return setOf(project.rootProject)
 
@@ -81,5 +93,9 @@ open class TrackerTask : DefaultTask() {
         }
 
         return collection
+    }
+
+    private fun info(vararg args: Any) {
+        logger.info(LOG_PATTERN, *args)
     }
 }
