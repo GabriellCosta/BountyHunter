@@ -2,10 +2,19 @@ plugins {
     kotlin("jvm")
     groovy
     maven
+    `maven-publish`
 }
 
 group = "dev.tigrao"
-version = "0.0.5"
+version = "0.1.0"
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+}
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))

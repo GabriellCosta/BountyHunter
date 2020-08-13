@@ -85,19 +85,20 @@ internal class GitClientImpl(
             ?.firstOrNull()
     }
 
-    override fun findChangesFromPrincipalBranch(): List<String> {
-        return findChangedFilesSince(getLastShaFromPrincipalBranch())
-    }
+    override fun findChangesFromPrincipalBranch(): List<String> =
+        getLastShaFromPrincipalBranch()?.let { hash ->
+            findChangedFilesSince(hash)
+        } ?: listOf()
 
     private fun getCurrentBranchName(): String =
         CURRENT_BRANCH_NAME_CMD
             .runCommand()
             .first()
 
-    private fun getLastShaFromPrincipalBranch(): String =
+    private fun getLastShaFromPrincipalBranch(): String? =
         MERGE_SHA_CMD.format(getCurrentBranchName(), defaultBranch)
             .runCommand()
-            .first()
+            .firstOrNull()
 
     private fun String.runCommand() = commandRunner.execute(this)
 
