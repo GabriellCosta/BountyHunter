@@ -16,9 +16,15 @@ open class TrackerTask : DefaultTask() {
     var defaultBranch: String = "master"
 
     var runTasks: Collection<String> = listOf()
+
+    var ignoredFiles: Collection<String> = listOf()
     // endregion
 
     // region Lazy fields
+    private val ignoredFilesExpr: List<Regex> by lazy {
+        ignoredFiles.map { it.toRegex() }
+    }
+
     private val gitClient: GitClient by lazy {
         GitClientImpl(project.projectDir, logger, defaultBranch = defaultBranch)
     }
@@ -29,6 +35,12 @@ open class TrackerTask : DefaultTask() {
 
     private val allAffectedFiles: List<String> by lazy {
         gitClient.findChangesFromPrincipalBranch()
+    }
+
+    private val affectedFiles: List<String> by lazy {
+        allAffectedFiles.filter { file ->
+            ignoredFilesExpr.none { file.matches(it) }
+        }
     }
 
     private val tasksToRun: Collection<String> by lazy {
@@ -57,7 +69,7 @@ open class TrackerTask : DefaultTask() {
 
     private fun getProjectsToRun(): Collection<Project> {
         val (affectedModules, nonModuleFiles) =
-            affectedModules.getAffectedModules(allAffectedFiles)
+            affectedModules.getAffectedModules(affectedFiles)
 
         val collection = affectedModules.toSortedSet()
 
