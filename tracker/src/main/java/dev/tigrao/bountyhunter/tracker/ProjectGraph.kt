@@ -24,7 +24,7 @@ import org.gradle.api.logging.Logger
 /**
  * Creates a project graph for fast lookup by file path
  */
-class ProjectGraph(rootProject: Project, val logger: Logger? = null) {
+class ProjectGraph(rootProject: Project, private val logger: Logger? = null) {
     private val rootNode: Node
 
     init {

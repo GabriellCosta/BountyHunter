@@ -6,15 +6,10 @@ import org.gradle.api.Project
 class TrackerPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        val extension = project.extensions.create<TrackerExtension>(
-            "tracker",
-            TrackerExtension::class.java
-        )
-
         project.tasks
-            .create(
+            .register(
                 "generateAffectedModulesFile",
-                TrackerTask::class.java, extension
+                TrackerTask::class.java
             )
     }
 }
