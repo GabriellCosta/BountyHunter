@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'dev.tigrao:tracker:0.0.5'
+        classpath 'dev.tigrao:tracker:0.1.0'
         classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
