@@ -1,7 +1,2 @@
-include ':app'
-include ':network'
-include ':core'
-include ':sample:core'
-
 include ':tracker'
 rootProject.name = 'BountyHunter'
