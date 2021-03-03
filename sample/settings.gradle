@@ -1,6 +1,6 @@
 include ':app'
 include ':network'
 include ':core'
-include ':sample:core'
+include ':library:core'
 
 rootProject.name = 'SampleBountyHunter'
