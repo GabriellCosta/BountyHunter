@@ -6,7 +6,7 @@ import org.gradle.api.Project
 class TrackerPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        val extension = project.extensions.create<TrackerExtension>(
+        val extension = project.extensions.create(
             "tracker",
             TrackerExtension::class.java
         )
