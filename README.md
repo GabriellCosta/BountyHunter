@@ -17,3 +17,14 @@ buildscript {
     }
 }
 ```
+
+Configuration
+--------
+
+Change the target branch
+
+```groovy
+tracker {
+    defaultBranch "master"
+}
+```
